@@ -4,7 +4,9 @@ import 'package:http/http.dart' as http;
 
 import '../constants/constants.dart';
 import '../exceptions/weather_exception.dart';
+import '../models/geocoding.dart';
 import '../models/weather.dart';
+import '../models/weather_new.dart';
 import 'http_error_handler.dart';
 
 class WeatherApiServices {
@@ -59,9 +61,68 @@ class WeatherApiServices {
 
       final weatherJson = json.decode(response.body);
       final Weather weather = Weather.fromJson(weatherJson);
-      print(weatherJson);
-      print(weather.weatherStateName);
-      print(weather.weatherStateAbbr);
+
+      return weather;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Geocoding> getGeoByName(String name) async {
+    final Uri uri = Uri(
+      scheme: 'https',
+      host: kGeoHostNew,
+      path: '/v1/search/',
+      queryParameters: {'name': name, 'count': '1'},
+    );
+    final headers = {'Content-Type': 'application/json'};
+
+    try {
+      final http.Response response = await http.get(uri, headers: headers);
+
+      if (response.statusCode != 200) {
+        throw Exception(httpErrorHandler(response));
+      }
+
+      final responseBody = json.decode(response.body);
+      final results = responseBody['results'];
+      if (results.isEmpty) {
+        throw WeatherException('Cannot get the geocoding of $name');
+      }
+
+      final Geocoding geocoding = Geocoding.fromJson(
+        responseBody['results'][0],
+      );
+
+      return geocoding;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<WeatherNew> getWeatherNew(double lat, double long) async {
+    final Uri uri = Uri(
+      scheme: 'https',
+      host: kHostNew,
+      path: '/v1/forecast/',
+      queryParameters: {
+        'latitude': jsonEncode(lat),
+        'longitude': jsonEncode(long),
+        'timezone': 'UTC',
+        'current_weather': jsonEncode(true),
+      },
+    );
+
+    try {
+      final http.Response response = await http.get(uri);
+
+      if (response.statusCode != 200) {
+        throw Exception(httpErrorHandler(response));
+      }
+
+      final responseBody = json.decode(response.body);
+      final weatherNewJson = responseBody['current_weather'];
+      final WeatherNew weather = WeatherNew.fromJson(weatherNewJson);
 
       return weather;
     } catch (e) {

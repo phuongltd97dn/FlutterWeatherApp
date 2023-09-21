@@ -23,17 +23,19 @@ class Weather extends Equatable {
     required this.lastUpdate,
   });
 
-  @override
-  List<Object?> get props => [
-        weatherStateName,
-        weatherStateAbbr,
-        created,
-        minTemp,
-        maxTemp,
-        title,
-        woeid,
-        lastUpdate,
-      ];
+  factory Weather.initial() {
+    return Weather(
+      weatherStateName: '',
+      weatherStateAbbr: '',
+      created: '',
+      minTemp: 100.0,
+      maxTemp: 100.0,
+      theTemp: 100.0,
+      title: '',
+      woeid: -1,
+      lastUpdate: DateTime(1970),
+    );
+  }
 
   factory Weather.fromJson(Map<String, dynamic> json) {
     final consolidatedWeather = json['consolidated_weather'][0];
@@ -51,17 +53,15 @@ class Weather extends Equatable {
     );
   }
 
-  factory Weather.initial() {
-    return Weather(
-      weatherStateName: '',
-      weatherStateAbbr: '',
-      created: '',
-      minTemp: 100.0,
-      maxTemp: 100.0,
-      theTemp: 100.0,
-      title: '',
-      woeid: -1,
-      lastUpdate: DateTime(1970),
-    );
-  }
+  @override
+  List<Object?> get props => [
+        weatherStateName,
+        weatherStateAbbr,
+        created,
+        minTemp,
+        maxTemp,
+        title,
+        woeid,
+        lastUpdate,
+      ];
 }
