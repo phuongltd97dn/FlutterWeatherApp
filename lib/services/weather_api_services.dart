@@ -86,7 +86,7 @@ class WeatherApiServices {
 
       final responseBody = json.decode(response.body);
       final results = responseBody['results'];
-      if (results.isEmpty) {
+      if (results == null || results.isEmpty) {
         throw WeatherException('Cannot get the geocoding of $name');
       }
 
