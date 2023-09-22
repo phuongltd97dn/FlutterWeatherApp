@@ -100,7 +100,11 @@ class WeatherApiServices {
     }
   }
 
-  Future<WeatherNew> getWeatherNew(double lat, double long) async {
+  Future<WeatherNew> getWeatherNew(
+    double lat,
+    double long,
+    String timezone,
+  ) async {
     final Uri uri = Uri(
       scheme: 'https',
       host: kHostNew,
@@ -108,7 +112,7 @@ class WeatherApiServices {
       queryParameters: {
         'latitude': jsonEncode(lat),
         'longitude': jsonEncode(long),
-        'timezone': 'UTC',
+        'timezone': timezone,
         'current_weather': jsonEncode(true),
       },
     );

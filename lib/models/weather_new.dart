@@ -6,7 +6,7 @@ class WeatherNew extends Equatable {
   final int windDirection;
   final int weatherCode;
   final int isDay;
-  final String time;
+  final DateTime time;
   final DateTime lastUpdate;
 
   const WeatherNew({
@@ -26,7 +26,7 @@ class WeatherNew extends Equatable {
       windDirection: -1,
       weatherCode: -1,
       isDay: -1,
-      time: '',
+      time: DateTime(1970),
       lastUpdate: DateTime(1970),
     );
   }
@@ -38,7 +38,7 @@ class WeatherNew extends Equatable {
       windDirection: json['winddirection'],
       weatherCode: json['weathercode'],
       isDay: json['is_day'],
-      time: json['time'],
+      time: DateTime.parse(json['time']),
       lastUpdate: DateTime.now(),
     );
   }

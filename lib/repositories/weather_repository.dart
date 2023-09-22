@@ -25,12 +25,28 @@ class WeatherRepository {
     }
   }
 
-  Future<WeatherNew> fetchWeatherNew(String name) async {
+  Future<Geocoding> fetchGeocoding(String name) async {
     try {
       final Geocoding geocoding = await weatherApiServices.getGeoByName(name);
+
+      return geocoding;
+    } on WeatherException catch (e) {
+      throw CustomError(errMsg: e.message);
+    } catch (e) {
+      throw CustomError(errMsg: e.toString());
+    }
+  }
+
+  Future<WeatherNew> fetchWeatherNew(
+    double lat,
+    double long,
+    String timezone,
+  ) async {
+    try {
       final WeatherNew weather = await weatherApiServices.getWeatherNew(
-        geocoding.latitude,
-        geocoding.longitude,
+        lat,
+        long,
+        timezone,
       );
 
       return weather;

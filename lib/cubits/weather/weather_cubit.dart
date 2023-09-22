@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/models/geocoding.dart';
 
 import '../../models/custom_error.dart';
 import '../../models/weather_new.dart';
@@ -15,17 +16,22 @@ class WeatherCubit extends Cubit<WeatherState> {
 
   Future<void> fetchWeather(String name) async {
     emit(state.copyWith(status: WeatherStatus.loading));
-    print(state);
 
     try {
-      final weather = await weatherRepository.fetchWeatherNew(name);
-      print(state);
+      final geocoding = await weatherRepository.fetchGeocoding(name);
+      final weather = await weatherRepository.fetchWeatherNew(
+        geocoding.latitude,
+        geocoding.longitude,
+        geocoding.timezone,
+      );
 
-      emit(state.copyWith(status: WeatherStatus.loaded, weather: weather));
+      emit(state.copyWith(
+        status: WeatherStatus.loaded,
+        geocoding: geocoding,
+        weather: weather,
+      ));
     } on CustomError catch (e) {
       emit(state.copyWith(status: WeatherStatus.error, error: e));
     }
-
-    print(state);
   }
 }

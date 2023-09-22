@@ -28,7 +28,7 @@ class Geocoding extends Equatable {
   });
 
   factory Geocoding.initial() {
-    return Geocoding(
+    return const Geocoding(
       id: -1,
       name: '',
       latitude: 0.0,
